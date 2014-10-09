@@ -62,8 +62,13 @@
 
 (def colors (vec (dullify [pink blue yellow] 8)))
 
-(defn hex-color [& vals]
-  (apply str "rgb(" (conj (vec (take 5 (interleave (map Math/floor vals) (repeat ", ")))) ")")))
+(defn floor [n] (Math/floor n))
+
+(defn hex-color [[r g b]]
+  (str "rgb(" (floor r) ", " (floor g) ", " (floor b) ")"))
+
+(defn wordify [text color]
+  (html [:p {:style {:color (hex-color color)}} text]))
 
 (defn widget [data]
   (om/component
@@ -76,10 +81,7 @@
               :text-align "center"
               :margin "auto"
               :width "200px"}}
-       (map 
-        #(vector :p {:style {:color (apply hex-color %2)}} %1) 
-        words
-        colors)]))))
+       (map wordify words colors)]))))
 
 (om/root widget {} {:target js/document.body})
 
